@@ -6,6 +6,7 @@ import com.djw.weatherApp.service.WeatherService;
 import com.djw.weatherApp.utils.DateFormatterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,16 +30,22 @@ public class WeatherServiceImpl implements WeatherService {
     @Value("${openWeather.api.key}")
     private String API_KEY;
 
+    @Value("${cache.names.weather-summaries}")
+    String weatherSummariesCacheString;
+
     private final WebClient webClient;
     private final DateFormatterUtil dateFormatterUtil;
 
     @Override
     @Async
+    @Cacheable("weatherSummary")
     public CompletableFuture<WeatherSummaryDTO> getWeatherSummaryForCity(String city){
         return fetchWeatherDataFromOpenWeatherMap(city).map(weatherAPIResponse -> {
             if (weatherAPIResponse == null || weatherAPIResponse.getDaily() == null || weatherAPIResponse.getDaily().isEmpty()) {
                 throw new RuntimeException("Could not retrieve weather data for " + city);
             }
+
+            System.out.println("Returning Res from server");
 
             List<WeatherAPIResponse.DailyForecast> forecastList = weatherAPIResponse.getDaily().stream().collect(Collectors.toList());
 
