@@ -1,6 +1,7 @@
 package com.djw.weatherApp.controller;
 
 import com.djw.weatherApp.domain.dto.APIErrorResponse;
+import com.djw.weatherApp.exception.InvalidCityException;
 import com.djw.weatherApp.exception.OpenWeatherMapApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, status);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<APIErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+    @ExceptionHandler(InvalidCityException.class)
+    public ResponseEntity<APIErrorResponse> handleInvalidCityException(InvalidCityException ex){
         HttpStatus status = HttpStatus.BAD_REQUEST;
         APIErrorResponse errorResponse = APIErrorResponse.builder()
                 .status(status.value())
