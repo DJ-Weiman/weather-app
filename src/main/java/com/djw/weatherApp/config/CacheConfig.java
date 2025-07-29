@@ -23,7 +23,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         cacheManager.setCaffeine(Caffeine.newBuilder()
-                .expireAfterWrite(30, TimeUnit.MINUTES)
+                .expireAfterWrite(24, TimeUnit.HOURS)
         );
 
         cacheManager.setCacheNames(Collections.singletonList(weatherSummariesCacheString));
